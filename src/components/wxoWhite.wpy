@@ -1,0 +1,32 @@
+<style lang="less">
+
+</style>
+<template>
+    <view style="background-color: #fff; height: {{ item.Height }}px;">{{ item.Height }}</view>
+</template>
+
+<script>
+    import wepy from 'wepy'
+    import request from '../utils/request'
+
+    export default class wxoWhite extends wepy.component {
+        props = {
+            item: { type: Object, twoWay: true }
+        }
+
+        data = {}
+
+        computed = {}
+
+        methods = {}
+
+        events = {
+            initItem(options){
+
+            }
+        }
+
+        onLoad() {}
+
+    }
+</script>

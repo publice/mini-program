@@ -1,0 +1,28 @@
+<style lang="less">
+
+</style>
+<template>
+    <view>address</view>
+</template>
+
+<script>
+    import wepy from 'wepy'
+    import Toast from 'wepy-com-toast'
+
+    export default class Address extends wepy.page {
+        config = {
+            navigationBarTitleText: '收货地址'
+        }
+
+        data = {}
+
+        computed = {}
+
+        methods = {}
+
+        events = {}
+
+        onLoad() {}
+
+    }
+</script>

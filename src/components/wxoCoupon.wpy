@@ -1,0 +1,99 @@
+<style lang="less">
+    /*.sawtooth {*/
+        /*/!* 相对定位，方便让before和after伪元素绝对定位偏移 *!/*/
+        /*position: relative;*/
+        /*/!* 把超出p的部分隐藏起来 *!/*/
+        /*overflow: hidden;*/
+    /*}*/
+
+    /*.sawtooth:before, .sawtooth:after {*/
+        /*content: ' ';*/
+        /*width: 0;*/
+        /*height: 100%;*/
+        /*/!* 绝对定位进行偏移 *!/*/
+        /*position: absolute;*/
+        /*top: -10rpx;*/
+    /*}*/
+
+    /*.sawtooth.sawtooth-left:before {*/
+        /*/!* 圆点型的border *!/*/
+        /*border-right: 20rpx dotted white;*/
+        /*/!* 偏移一个半径，让圆点的一半覆盖p *!/*/
+        /*left: -10rpx;*/
+    /*}*/
+
+    /*.sawtooth.sawtooth-right:after {*/
+        /*/!* 圆点型的border *!/*/
+        /*border-left: 20rpx dotted white;*/
+        /*/!* 偏移一个半径，让圆点的一半覆盖p *!/*/
+        /*right: -10rpx;*/
+    /*}*/
+    .tooth-left{
+        position: relative;
+        background-color: #938A53;
+        color: #fff;
+        background-image: radial-gradient(#fff 42%,#938A53 42%);
+        background-size: 16rpx 16rpx;
+        background-position: -8rpx -8rpx;
+        background-repeat: repeat-y
+    }
+
+    .tooth-right{
+        position: relative;
+        background-color: #B4AC87;
+        color: #fff;
+        background-image: radial-gradient(#fff 42%,#B4AC87 42%);
+        background-size: 16rpx 16rpx;
+        background-position: calc(100% + 8rpx) -8rpx;
+        background-repeat: repeat-y
+    }
+
+    .wxo-coupon{
+        width:345rpx;padding-bottom: 10rpx;
+    }
+    .wxo-coupon:nth-child(odd){
+        padding-right: 10rpx;
+    }
+    .wxo-coupon:nth-child(even){
+        padding-left: 10rpx;
+    }
+</style>
+<template>
+    <view style="display: flex; flex-wrap: wrap;padding:20rpx;">
+        <view class="wxo-coupon" wx:for="{{ item.Coupon }}" wx:key="index" wx:for-item="coupon">
+            <view style="display: flex;text-align: center; font-size: 22rpx;border-radius: 6rpx;overflow: hidden">
+                <view style="flex: 1; padding: 10rpx 0 18rpx;" class="tooth-right">
+                    <view style="font-size: 48rpx;border-bottom: 1rpx solid #fff;width: 140rpx;margin: 0 auto;"><text style="font-size: 28rpx;margin-right: 6rpx;">¥</text>{{ coupon.Value }}</view>
+                    <view style="padding-top: 10rpx;">满 {{ coupon.LimitValue }} 元使用</view>
+                </view>
+                <view style="width: 90rpx;background-color: #938A53; color: #f5f5f5;line-height: 134rpx;" class="tooth-left" @tap.stop="receive({{ coupon }})">领取</view>
+            </view>
+        </view>
+    </view>
+</template>
+
+<script>
+    import wepy from 'wepy'
+    import request from '../utils/request'
+
+    export default class wxoCoupon extends wepy.component {
+        props = {
+            item: { type: Object, twoWay: true }
+        }
+
+        data = {}
+
+        computed = {}
+
+        methods = {
+            receive(data){
+                request.toast('暂不支持领取！');
+            }
+        }
+
+        events = {}
+
+        onLoad() {}
+
+    }
+</script>

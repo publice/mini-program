@@ -1,0 +1,58 @@
+<style lang="less">
+
+</style>
+<template>
+    <view style="position: relative;width: 750rpx;height: {{ calcHeight }}rpx;">
+        <view wx:for="{{ item.Magic }}" wx:key="index" wx:for-index="rowIndex" wx:for-item="items">
+            <view wx:for="{{ items }}" wx:key="index" wx:for-index="colIndex" wx:for-item="magic">
+                <image style="position: absolute;top: {{ magic.top }}rpx;left: {{ colIndex * cells }}rpx; width: {{ magic.width }}rpx; height: {{ magic.height }}rpx;"
+                       wx:if="{{ magic.ImageUrl }}" src="{{ magic.ImageUrl }}" data-row="{{ rowIndex }}" data-col="{{ colIndex }}" bindload="imageLoad"></image>
+            </view>
+        </view>
+    </view>
+</template>
+
+<script>
+    import wepy from 'wepy'
+    import request from '../utils/request'
+
+    export default class wxoMagicCube extends wepy.component {
+        props = {
+            item: { type: Object, twoWay: true }
+        }
+
+        data = {
+            cells: 750 / 4
+        }
+
+        computed = {
+            calcHeight(){
+                if(!this.item){ return 0}
+
+                var arr = [0, 0, 0, 0];
+
+                this.item.Magic.forEach(function(items){
+                    items.forEach(function(magic, colIndex){
+                        magic.top = arr[colIndex];
+                        arr[colIndex] += magic.height || 0;
+                    });
+                });
+
+                return Math.max.apply(this, arr);
+            }
+        }
+
+        methods = {
+            imageLoad(e){
+                var item = this.item.Magic[e.target.dataset.row][e.target.dataset.col];
+                item.width = item.Width * this.cells;
+                item.height = item.width / e.detail.width * e.detail.height;
+            }
+        }
+
+        events = {}
+
+        onLoad() {}
+
+    }
+</script>

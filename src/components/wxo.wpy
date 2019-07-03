@@ -1,0 +1,84 @@
+<style lang="less">
+
+</style>
+<template>
+    <view wx:if="{{ items }}">
+        <repeat for="{{ items }}" key="index" index="index" item="item">
+            <wxoCoupon wx:if="{{ item.Type === 'coupon' }}" :item.sync="item"></wxoCoupon>
+            <wxoGoods wx:if="{{ item.Type === 'min_goods' }}" :item.sync="item"></wxoGoods>
+            <wxoGoodsList wx:if="{{ item.Type === 'min_goods_list' }}" :item.sync="item"></wxoGoodsList>
+            <wxoImageAd wx:if="{{ item.Type === 'min_image_ad' }}" :item.sync="item"></wxoImageAd>
+            <wxoLine wx:if="{{ item.Type === 'line' }}" :item.sync="item"></wxoLine>
+            <wxoMagicCube wx:if="{{ item.Type === 'magic_cube' }}" :item.sync="item"></wxoMagicCube>
+            <wxoScroll wx:if="{{ item.Type === 'min_scroll' }}" :item.sync="item"></wxoScroll>
+            <wxoSearch wx:if="{{ item.Type === 'search' }}" :item.sync="item"></wxoSearch>
+            <wxoVipInfo wx:if="{{ item.Type === 'vip_info' }}" :item.sync="item"></wxoVipInfo>
+            <wxoWhite wx:if="{{ item.Type === 'white' }}" :item.sync="item"></wxoWhite>
+        </repeat>
+    </view>
+</template>
+
+<script>
+    import wepy from 'wepy'
+    import Toast from 'wepy-com-toast'
+    import config from '../utils/config'
+    import request from '../utils/request'
+
+    import wxoCoupon from './wxoCoupon'
+    import wxoGoods from './wxoGoods'
+    import wxoGoodsList from './wxoGoodsList'
+    import wxoImageAd from './wxoImageAd'
+    import wxoLine from './wxoLine'
+    import wxoMagicCube from './wxoMagicCube'
+    import wxoScroll from './wxoScroll'
+    import wxoSearch from './wxoSearch'
+    import wxoVipInfo from './wxoVipInfo'
+    import wxoWhite from './wxoWhite'
+
+    export default class wxo extends wepy.component {
+        components = {
+            wxoCoupon: wxoCoupon,
+            wxoGoods: wxoGoods,
+            wxoGoodsList: wxoGoodsList,
+            wxoImageAd: wxoImageAd,
+            wxoLine: wxoLine,
+            wxoMagicCube: wxoMagicCube,
+            wxoScroll: wxoScroll,
+            wxoSearch: wxoSearch,
+            wxoVipInfo: wxoVipInfo,
+            wxoWhite: wxoWhite
+        }
+
+        data = {
+            items: []
+        }
+
+        computed = {}
+
+        methods = {}
+
+        events = {
+            initPage(options){
+                this.getPage(options)
+            }
+        }
+
+        onLoad() {
+
+        }
+
+        async getPage(options){
+            options.AppId = config.appId;
+            let res = await request.post('/min_page/getPage', options);
+            if(res.IsSuccess){
+                this.items = res.TModel.Content;
+                this.$broadcast('initItem', this.items);
+                this.$apply();
+
+                wepy.setNavigationBarTitle({title: this.items[0].Title});
+            }else{
+                wx.showToast({title: res.Message || 'interface error', icon: 'none', duration: 3000});
+            }
+        }
+    }
+</script>

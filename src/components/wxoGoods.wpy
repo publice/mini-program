@@ -1,0 +1,91 @@
+<style lang="less">
+    .wxo-goods{
+        display: flex; flex-wrap: wrap;padding: 20rpx;
+
+        .items{
+            width: 315rpx;padding: 20rpx;
+        }
+
+        .title{
+            display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 2;overflow: hidden;margin-bottom: 10rpx;
+        }
+
+        .desc{
+            display: flex; color: #999;
+
+            .price{
+                flex: 1;
+            }
+            .i-cart{
+                width: 50rpx;
+            }
+        }
+    }
+
+</style>
+<template>
+    <view class="wxo-goods">
+        <view class="items" wx:for="{{ item.Good }}" wx:key="index" wx:for-item="goods" @tap.stop="redirect({{ goods }})">
+            <image src="{{goods.ImageUrl}}" mode="widthFix"></image>
+            <view class="title">{{ goods.Title }}</view>
+            <view class="desc">
+                <view class="price"><text class="dollar">¥</text>{{ goods.Price }}</view>
+                <view class="i-cart"><i class="icon icon-gouwuche"></i></view>
+            </view>
+        </view>
+    </view>
+</template>
+
+<script>
+    import wepy from 'wepy'
+    import request from '../utils/request'
+    import mixin from '../mixins/mixin'
+
+    export default class wxoGoods extends wepy.component {
+        props = {
+            item: { type: Object, twoWay: true }
+        }
+
+        mixins = [mixin]
+
+        data = {}
+
+        computed = {
+
+        }
+
+        methods = {
+            redirect(item){
+                wepy.navigateTo({url: '/pages/goods?no=' + item.Id});
+            }
+        }
+
+        events = {
+            initItem(options){
+                var items = options.filter(function(item){ return item.Type === 'min_goods'});
+                items && items.forEach(function(item){
+                    item.Good && this.initPrice(item);
+                }.bind(this))
+            }
+        }
+
+        onLoad() {}
+
+        async initPrice(item){
+            var ids = item.Good.map(function(good){ return good.Id });
+            var res = await request.post('/product/getPriceList', {GzNo: this.mini.GzNo, ShopStyleId: ids}, {showLoading: false});
+            if(res.IsSuccess){
+                res.TModel.forEach(function(data){
+                    item.Good.forEach(function(good){
+                        if(data.ShopStyleId == good.Id){
+                            good.Price = data.Price;
+                            good.VipPrice = data.VipPrice;
+                            good.ListPrice = data.ListPrice;
+                            good.GId = data.GId;
+                        }
+                    })
+                });
+            }
+        }
+    }
+</script>

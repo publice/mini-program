@@ -1,0 +1,109 @@
+<style lang="less">
+
+</style>
+<template>
+    <view>
+        <swiper style="height: {{ imageHeights[current] }}rpx;" indicator-dots="true" indicator-color="#ffffff" bindchange="imageChange">
+            <swiper-item wx:for="{{ goods.Images }}" wx:key="index" wx:for-item="image">
+                <image class="slide-image" src="{{ image.ThumbUrl }}" data-id="{{ index }}" bindload="imageLoad"/>
+            </swiper-item>
+        </swiper>
+        <view style="padding: 30rpx;">{{ goods.Title }}</view>
+        <view><text class="dollar">¥</text>{{ goods.Price }}</view>
+        <import src="../plugins/wxParse/wxParse.wxml" />
+        <view>
+            <template is="wxParse" data="{{wxParseData: desc.nodes}}"></template>
+        </view>
+        <view style="position: fixed; left: 0; bottom: 0; height: 100rpx; width: 100%;display: flex;background-color: #fff;text-align: center;align-items: center;border-top: 2rpx solid #eee;">
+            <view style="width: 120rpx;font-size: 24rpx;border-right: 2rpx solid #ddd">
+                <i class="icon icon-gouwuche"></i>
+                <view>购物车</view>
+            </view>
+            <view style="width: 120rpx;font-size: 24rpx;">
+                <i class="icon icon-shouye"></i>
+                <view>商城</view>
+            </view>
+            <view style="flex: 1; display: flex;">
+                <view style="flex: 1;background-color: #B4AC87;color:#fff;line-height: 100rpx;">加入购物车</view>
+                <view style="flex: 1;background-color: #938A53;color:#fff;line-height: 100rpx;" @tap.stop="showSku()">立即购买</view>
+            </view>
+        </view>
+        <view style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(3,3,3,0.6);">
+            <view style="position: absolute; bottom: 0; width: 100%; background-color: #fff;">
+                <view style="position: relative;height: 200rpx; padding-left: 260rpx;font-size:24rpx;color:#999;border-bottom: 2rpx solid #eee;">
+                    <image style="position: absolute;top: -30rpx;left: 30rpx; width: 200rpx;height: 200rpx;" src="{{ goods.ImageUrl }}"></image>
+                    <view style="font-size: 36rpx;color:#938A53;padding:20rpx 0 10rpx;"><text class="dollar">¥</text>{{ goods.Price }}</view>
+                    <view>库存：件</view>
+                    <view>请选择：尺码 颜色</view>
+                </view>
+                <view style="margin:0 30rpx;padding-bottom: 20rpx;border-bottom: 2rpx solid #ddd; font-size: 24rpx; color: #999;" wx:for="{{ goods.Skus }}" wx:for-item="sku">
+                    <view style="padding: 16rpx 0;">{{ sku.Sku.Name }}</view>
+                    <view style="display: flex;">
+                        <view style="margin-right: 20rpx;border: 2rpx solid #ddd;text-align: center;padding: 6rpx 10rpx;color:#333;" wx:for="{{ sku.SkuValue }}" wx:for-item="skuValue">{{ skuValue.Name }}</view>
+                    </view>
+                </view>
+                <view style="display: flex;">
+                    <text style="width: 100rpx;">数量</text>
+                    <view style="flex: 1; text-align: right">
+                        <view style="display: flex">
+                            <view style="width: 60rpx;height: 60rpx;border: 2rpx solid #eee;">-</view>
+                            <view style="width: 60rpx;height: 60rpx;border: 2rpx solid #eee;"></view>
+                            <view style="width: 60rpx;height: 60rpx;border: 2rpx solid #eee;">+</view>
+                        </view>
+                    </view>
+                </view>
+            </view>
+        </view>
+    </view>
+</template>
+
+<script>
+    import wepy from 'wepy'
+    import Toast from 'wepy-com-toast'
+    import request from '../utils/request'
+    import WxParse from '../plugins/wxParse/wxParse'
+
+    export default class Goods extends wepy.page {
+        config = {
+            navigationBarTitleText: '商品详情'
+        }
+
+        data = {
+            current: 0,
+            imageHeights: [],
+            user: wepy.getStorageSync('user'),
+            goods: {}
+        }
+
+        computed = {}
+
+        methods = {
+            imageChange(e){
+                this.current = e.detail.current;
+            },
+            imageLoad(e){
+                this.imageHeights[e.target.dataset.id] = 750 / (e.detail.width / e.detail.height);
+            },
+            showSku(){
+
+            }
+        }
+
+        events = {}
+
+        onLoad(options) {
+            this.getOne(options.no);
+        }
+
+        async getOne(styleId){
+            let res = await request.post('/product/getOne', {ShopStyleId: styleId, GzNo: this.user.GzNo});
+            if(res.IsSuccess){
+                this.goods = res.TModel;
+                WxParse.wxParse('desc', 'html', this.goods.Description, this);
+                this.$apply();
+            }
+
+        }
+
+    }
+</script>

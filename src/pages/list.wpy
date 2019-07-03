@@ -1,0 +1,28 @@
+<style lang="less">
+
+</style>
+<template>
+    <view>list</view>
+</template>
+
+<script>
+    import wepy from 'wepy'
+    import Toast from 'wepy-com-toast'
+
+    export default class List extends wepy.page {
+        config = {
+            navigationBarTitleText: '商品列表'
+        }
+
+        data = {}
+
+        computed = {}
+
+        methods = {}
+
+        events = {}
+
+        onLoad() {}
+
+    }
+</script>

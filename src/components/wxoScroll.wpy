@@ -1,0 +1,98 @@
+<style lang="less">
+
+</style>
+<template>
+    <view>
+        <view wx:if="{{ item.ShowMethod == 0 }}">
+            <scroll-view style="white-space: nowrap;" scroll-x="true">
+                <view style="width: 300rpx;display: inline-block;" wx:for="{{ item.Image }}" wx:key="index" wx:for-item="image" @tap.stop="imageClick({{ image }})">
+                    <image src="{{ image.ImageUrl }}" mode="widthFix"></image>
+                </view>
+            </scroll-view>
+        </view>
+        <view wx:if="{{ item.ShowMethod == 1}}">
+            <scroll-view style="white-space: nowrap;" scroll-x="true">
+                <view style="padding: 0 20rpx;">
+                    <view style="width: 260rpx;display: inline-block;padding: 0 20rpx;" wx:for="{{ item.Good }}" wx:key="index" wx:for-item="goods" @tap.stop="goodsClick({{ goods }})">
+                        <image src="{{goods.ImageUrl}}" mode="widthFix"></image>
+                        <view style="width: 260rpx;overflow: hidden; white-space: nowrap; text-overflow: ellipsis;font-size: 24rpx;margin: 8rpx 0 16rpx;">{{ goods.Title }}</view>
+                        <view style="display: flex; color: #999;">
+                            <view style="flex: 1"><text class="dollar">¥</text>{{ goods.Price }}</view>
+                            <view style="width: 50rpx;"><i class="icon icon-gouwuche"></i></view>
+                        </view>
+                    </view>
+                </view>
+            </scroll-view>
+            <view style="margin: 40rpx 40rpx 0 40rpx;border-top: 2rpx solid #ddd;text-align: center; line-height: 84rpx;font-size: 24rpx; color: #999;">
+                <text>查看更多</text><i style="font-size: 24rpx;margin-left: 10rpx;" class="icon icon-xiangyoujiantou"></i>
+            </view>
+        </view>
+        <view wx:if="{{ item.ShowMethod == 2}}">
+            <view style="display: flex;padding: 20rpx 0;">
+                <view style="width: 40rpx;"></view>
+                <scroll-view style="white-space: nowrap;width: 670rpx;" scroll-x="true">
+                    <view style="display: inline-block;padding: 10rpx 20rpx;" wx:for="{{ item.Group }}" wx:key="index" wx:for-item="group" @tap.stop="groupClick({{ group }})">{{ group.Title }}</view>
+                </scroll-view>
+                <view style="width: 40rpx;text-align: center; padding-top: 10rpx;"><i class="icon icon-xiangyoujiantou"></i></view>
+            </view>
+        </view>
+        <view wx:if="{{ item.ShowMethod == 3}}">
+            <view style="padding: 20rpx 0 20rpx 20rpx;">
+                <view style="padding-bottom: 20rpx;font-size: 36rpx;font-weight: bold" wx:if="{{ item.Title }}">{{ item.Title }}</view>
+                <scroll-view style="white-space: nowrap;" scroll-x="true">
+                    <view style="width: 300rpx;display: inline-block;padding-right: 20rpx; " wx:for="{{ item.Coupon }}" wx:key="index" wx:for-item="coupon">
+                        <view style="display: flex;text-align: center; font-size: 22rpx;border-radius: 6rpx;overflow: hidden">
+                            <view style="flex: 1; background-color: #B4AC87; color: #fff;padding: 10rpx 0 18rpx;" class="tooth-right">
+                                <view style="font-size: 48rpx;border-bottom: 1rpx solid #fff;width: 140rpx;margin: 0 auto;"><text class="dollar">¥</text>{{ coupon.Value }}</view>
+                                <view style="padding-top: 10rpx;">满 {{ 9999 | coupon.LimitValue }} 元使用</view>
+                            </view>
+                            <view style="width: 90rpx;background-color: #938A53; color: #f5f5f5;line-height: 134rpx;" class="tooth-left" @tap.stop="couponClick({{ coupon }})">领取</view>
+                        </view>
+                    </view>
+                </scroll-view>
+                <view style="padding-top: 20rpx;padding-right: 20rpx;font-size: 20rpx;color:#999;white-space: pre-wrap" wx:if="item.Remark">{{ item.Remark }}</view>
+            </view>
+        </view>
+    </view>
+</template>
+
+<script>
+    import wepy from 'wepy'
+    import request from '../utils/request'
+
+    export default class wxoScroll extends wepy.component {
+        props = {
+            item: { type: Object, twoWay: true }
+        }
+
+        data = {
+
+        }
+
+        computed = {}
+
+        methods = {
+            imageClick(image){
+                request.toast('暂不支持跳转！');
+            },
+            goodsClick(item){
+                wepy.navigateTo({url: '/pages/goods?no=' + item.Id});
+            },
+            groupClick(group){
+                request.toast('暂不支持跳转！');
+            },
+            couponClick(coupon){
+                request.toast('暂不支持跳转！');
+            }
+        }
+
+        events = {
+            initItem(options){
+
+            }
+        }
+
+        onLoad() {}
+
+    }
+</script>

@@ -1,0 +1,28 @@
+<style lang="less">
+
+</style>
+<template>
+
+</template>
+
+<script>
+    import wepy from 'wepy'
+    import request from '../utils/request'
+
+    export default class template extends wepy.component {
+        props = {
+            item: { type: Object, twoWay: true }
+        }
+
+        data = {}
+
+        computed = {}
+
+        methods = {}
+
+        events = {}
+
+        onLoad() {}
+
+    }
+</script>

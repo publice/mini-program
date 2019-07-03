@@ -1,0 +1,47 @@
+<style lang="less">
+
+</style>
+<template>
+    <wxo></wxo>
+</template>
+
+<script>
+    import wepy from 'wepy'
+    import Toast from 'wepy-com-toast'
+    import request from '../utils/request'
+    import wxo from '../components/wxo'
+
+
+    export default class Index extends wepy.page {
+        config = {
+            navigationBarTitleText: ''
+        }
+
+        components = {
+            toast: Toast,
+            wxo: wxo
+        }
+
+        data = {
+
+        }
+
+        computed = {}
+
+        methods = {}
+
+        events = {}
+
+        onLoad() {
+            request.checkAuth({target: 'index'}, function(){
+                this.$broadcast('initPage', {Type: 2});
+            }.bind(this))
+        }
+
+        onShow(){
+
+        }
+
+
+    }
+</script>

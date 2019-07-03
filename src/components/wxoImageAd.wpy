@@ -1,0 +1,63 @@
+<style lang="less">
+
+</style>
+<template>
+    <view>
+        <view wx:if="{{ item.ShowMethod == 1}}">
+            <view style="position: relative" wx:for="{{ item.Image }}" wx:key="index" wx:for-item="image">
+                <image class="image" mode="widthFix" src="{{ image.ImageUrl }}"></image>
+                <view wx:for="{{ image.Map}}" wx:key="index" wx:for-item="map">
+                    <view style="position: absolute;top: {{ systemInfo.screenWidth / mapWidth * systemInfo.pixelRatio * map.Top }}rpx;left: {{ systemInfo.screenWidth / mapWidth * systemInfo.pixelRatio * map.Left }}rpx;width: {{ systemInfo.screenWidth / mapWidth * systemInfo.pixelRatio * map.Width }}rpx;height: {{ systemInfo.screenWidth / mapWidth * systemInfo.pixelRatio * map.Height }}rpx;"
+                            @tap.stop="mapClick({{ map }})"></view>
+                </view>
+            </view>
+        </view>
+        <view wx:else>
+            <swiper style="height: {{ imageHeights[current] }}rpx;" indicator-dots="true" indicator-color="#ffffff" bindchange="imageChange">
+                <swiper-item wx:for="{{ item.Image }}" wx:key="index" wx:for-item="image">
+                    <image class="slide-image" src="{{ image.ImageUrl }}" data-id="{{ index }}" bindload="imageLoad"/>
+                </swiper-item>
+            </swiper>
+        </view>
+    </view>
+</template>
+
+<script>
+    import wepy from 'wepy'
+    import request from '../utils/request'
+
+    export default class wxoImageAd extends wepy.component {
+        props = {
+            item: { type: Object, twoWay: true }
+        }
+
+        data = {
+            current: 0,
+            imageHeights: [],
+            systemInfo: wepy.getSystemInfoSync(),
+            mapWidth: 468
+        }
+
+        computed = {}
+
+        methods = {
+            imageChange(e){
+                this.current = e.detail.current;
+            },
+            imageLoad(e){
+                this.imageHeights[e.target.dataset.id] = 750 / (e.detail.width / e.detail.height);
+            },
+            mapClick(map){
+                console.log(map);
+                request.toast('暂不支持跳转！');
+            }
+        }
+
+        events = {}
+
+        onLoad() {
+
+        }
+
+    }
+</script>

@@ -1,0 +1,32 @@
+<style lang="less">
+
+</style>
+<template>
+    <view>
+        <view style="margin: 20rpx 30rpx; display: flex; align-items: center; border: 1rpx solid #ddd; border-radius: 50rpx; ">
+            <i class="icon icon-sousuo" style="margin: 0 14rpx ;color: #999;"></i><input style="width: 650rpx;padding: 12rpx 0;" placeholder="请输入搜索的商品" placeholder-style="color:#999"/>
+        </view>
+    </view>
+</template>
+
+<script>
+    import wepy from 'wepy'
+    import request from '../utils/request'
+
+    export default class wxoSearch extends wepy.component {
+        props = {
+            item: { type: Object, twoWay: true }
+        }
+
+        data = {}
+
+        computed = {}
+
+        methods = {}
+
+        events = {}
+
+        onLoad() {}
+
+    }
+</script>

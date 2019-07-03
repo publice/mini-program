@@ -1,0 +1,89 @@
+<style lang="less">
+
+</style>
+<template>
+    <view>
+        <web-view src="{{ src }}"></web-view>
+    </view>
+</template>
+
+<script>
+    import wepy from 'wepy'
+    import Toast from 'wepy-com-toast'
+    import request from '../utils/request'
+    import config from '../utils/config'
+
+
+    export default class Oauth extends wepy.page {
+        config = {
+            navigationBarTitleText: ''
+        }
+
+        components = {
+            toast: Toast
+        }
+
+        data = {
+            src: '',
+            mini: '',
+            options: {}
+        }
+
+        computed = {}
+
+        methods = {}
+
+        events = {}
+
+        onLoad(options) {
+            var self = this;
+
+            self.options = Object.assign({
+                target: 'index'
+            }, options);
+
+            self.mini = wepy.getStorageSync('mini');
+
+            if(this.options.openid){
+                //微信授权回调
+                request.getAuth(self.mini.GzNo, self.options.openid).then(function(res){
+                    res.IsSuccess && self.reLaunch();
+                });
+            }else if(self.mini){
+                //存在小程序数据直接跳转微信授权
+                self.redirectTo();
+            }else{
+                //先获取小程序数据再跳转微信授权
+                self.getMini();
+            }
+        }
+
+        async getMini(){
+            let res = await request.post('/min_program/getMini', {AppId: config.appId});
+            if(res.IsSuccess){
+                this.mini = res.TModel;
+                wepy.setStorageSync('mini', res.TModel);
+
+                this.redirectTo();
+            }else{
+                request.toast(res.Message);
+            }
+        }
+
+        redirectTo(){
+            var url = encodeURIComponent('/mob/page/oauth?gzno=' + this.mini.GzNo + '&target=' + this.options.target);
+            var redirectUri = config.authMail + '/mob/oauth?appid=' + this.mini.Wxid + '&gzno=' + this.mini.GzNo + '&url=' + url;
+            this.src = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=' + this.mini.Wxid + '&redirect_uri=' + encodeURIComponent(redirectUri) + '&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect';
+            this.$apply();
+        }
+
+        reLaunch(){
+            if(['index', 'sort', 'cart', 'order'].indexOf(this.options.target) >= 0){
+                wepy.switchTab({url: '/pages/' + this.options.target});
+            }else{
+                wepy.redirectTo({url: '/pages/' + this.options.target});
+            }
+        }
+
+    }
+</script>

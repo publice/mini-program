@@ -1,0 +1,72 @@
+<style lang="less">
+    .wxo-vip-info{
+        position: relative; display: flex; padding: 50rpx;
+
+        .vip-image{
+            width: 160rpx;
+
+            image{
+                width: 120rpx; height: 120rpx; border-radius: 100rpx;
+            }
+        }
+    }
+</style>
+<template>
+    <view class="wxo-vip-info" style="background-color: {{item.BgColor}}; color: {{item.Color}}">
+        <view class="vip-image">
+            <image src="{{ fans.FansIcon }}"></image>
+        </view>
+        <view>
+            <view>{{fans.FansName}}</view>
+            <view>积分：{{fans.Points}}</view>
+            <view>手机号：{{fans.Mobile}}</view>
+        </view>
+    </view>
+</template>
+
+<script>
+    import wepy from 'wepy'
+    import request from '../utils/request'
+
+    export default class wxoVipInfo extends wepy.component {
+        props = {
+            item: { type: Object, twoWay: true }
+        }
+
+        data = {
+            fans: {},
+            count: 0
+        }
+
+        computed = {
+
+        }
+
+        methods = {
+
+        }
+
+        events = {
+            initItem(options){
+                if(options.some(function(item){ return item.Type === 'vip_info' })){
+                    this.getFans();
+                }
+            }
+        }
+
+        onLoad() {
+
+        }
+
+        async getFans(){
+            let res = await request.post('/crm/getFans');
+            if(res.IsSuccess){
+                this.fans = res.TModel;
+                this.$apply();
+            }else{
+                request.toast(res.Message);
+            }
+        }
+
+    }
+</script>

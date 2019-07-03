@@ -1,0 +1,28 @@
+<style lang="less">
+
+</style>
+<template>
+    <view>sort</view>
+</template>
+
+<script>
+    import wepy from 'wepy'
+    import Toast from 'wepy-com-toast'
+
+    export default class Sort extends wepy.page {
+        config = {
+            navigationBarTitleText: '商品分类'
+        }
+
+        data = {}
+
+        computed = {}
+
+        methods = {}
+
+        events = {}
+
+        onLoad() {}
+
+    }
+</script>
